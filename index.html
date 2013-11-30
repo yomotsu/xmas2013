@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Santa's Boxes!</title>
+<link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+
+<div class="mod-splash">
+  <div class="mod-splash-image"><img src="assets/img/mod-splash/img.jpg" height="400" width="520" alt=""></div>
+  <p>
+    Move with
+    <kbd class="mod-key">W</kbd>
+    <kbd class="mod-key">A</kbd>
+    <kbd class="mod-key">S</kbd>
+    <kbd class="mod-key">D</kbd>
+    or
+    <kbd class="mod-key">&uparrow;</kbd>
+    <kbd class="mod-key">&rightarrow;</kbd>
+    <kbd class="mod-key">&downarrow;</kbd>
+    <kbd class="mod-key">&leftarrow;</kbd>
+    keys.
+  </p>
+  <p>That's it!</p>
+  <p>Got it? <span class="mod-button js-play">Play</span></p>
+<!-- /.mod-splash --></div>
+
+<div class="mod-spinner">
+<!-- /.mod-spinner --></div>
+
+<div class="mod-info">
+  <ul>
+    <li>Twitter: <a href="https://twitter.com/yomotsu/">@yomotsu</a></li>
+    <li>Repo: <a href="https://github.com/yomotsu/xmas2013">xmas2013</a></li>
+    <li>Thanks to <a href="http://threejs.org/">three.js r63</a> and <a href="http://cannonjs.org/">Cannon.js</a></li>
+    <li>Santa model comes from <a href="http://-paya.seesaa.net/article/308795489.html">p-blog</a></li>
+    <li><a href="#">Behind The Scene</a></li>
+  </ul>
+<!-- /.mod-info --></div>
+
+
+<script src="assets/js/libs.js"></script>
+<!-- <script src="assets/js/vendor/jquery-1.10.2.min.js"></script>
+<script src="assets/js/vendor/three.min.js"></script>
+<script src="assets/js/vendor/cannon.min.js"></script>
+<script src="assets/js/vendor/perlin-noise-simplex.js"></script> -->
+
+
+<script src="assets/js/xmas.min.js"></script>
+<!-- <script src="assets/js/src/xmas.js"></script>
+<script src="assets/js/src/util.js"></script>
+<script src="assets/js/src/init.js"></script>
+<script src="assets/js/src/ground.js"></script>
+<script src="assets/js/src/skybox.js"></script>
+<script src="assets/js/src/snow.js"></script>
+<script src="assets/js/src/forrest.js"></script>
+<script src="assets/js/src/box.js"></script>
+<script src="assets/js/src/santa.js"></script>
+<script src="assets/js/src/keyinput.js"></script> -->
+
+<script>
+$( function () {
+  var $splash = $( '.mod-splash' );
+  var $spinner = $( '.mod-spinner' );
+  $splash.find( '.js-play' ).one( 'click', function ( e ) {
+    $splash.addClass( 'mod-splash--ready' );
+
+    if ( !xmas.webglExperimental ) {
+      alert( 'Unable to initialize WebGL. Your browser may not support it.' );
+      return;
+    }
+
+    xmas.init();
+
+    var treePosition = [
+      new THREE.Vector3( -10, 0,   5 ),
+      new THREE.Vector3( -30, 0, -10 ),
+      new THREE.Vector3(  10, 0,   5 )
+    ];
+
+    var ground  = new xmas.Ground();
+    var skybox  = new xmas.Skybox();
+    var snow    = new xmas.Snow();
+    var forrest = new xmas.Forrest( treePosition );
+    var box     = new xmas.Box();
+    var santa   = new xmas.Santa();
+    var ctrl    = new xmas.KeyInput( santa );
+
+    $.when(
+      wait( 1000 ),
+      ground.load(),
+      skybox.load(),
+      snow.load(),
+      forrest.load(),
+      box.load(),
+      santa.load()
+    ).done( function (){
+      setupBoxes();
+      xmas.play();
+      $spinner.addClass( 'mod-spinner--ready' );
+    } );
+
+    function setupBoxes () {
+      var w = xmas.Box.WIDTH,
+          h = xmas.Box.HEIGHT,
+          offsetX = -10,
+          offsetZ = -15;
+          position = [
+        new THREE.Vector3( offsetX, h / 2 + h * 0, offsetZ + w * 1 ),
+        new THREE.Vector3( offsetX, h / 2 + h * 0, offsetZ + w * 2 ),
+        new THREE.Vector3( offsetX, h / 2 + h * 0, offsetZ + w * 3 ),
+        new THREE.Vector3( offsetX, h / 2 + h * 0, offsetZ + w * 4 ),
+
+        new THREE.Vector3( offsetX, h / 2 + h * 1, offsetZ + w * 1 + w / 2 ),
+        new THREE.Vector3( offsetX, h / 2 + h * 1, offsetZ + w * 2 + w / 2 ),
+        new THREE.Vector3( offsetX, h / 2 + h * 1, offsetZ + w * 3 + w / 2 ),
+
+        new THREE.Vector3( offsetX, h / 2 + h * 2, offsetZ + w * 2 ),
+        new THREE.Vector3( offsetX, h / 2 + h * 2, offsetZ + w * 3 ),
+
+        new THREE.Vector3( offsetX, h / 2 + h * 3, offsetZ + w * 2 + w / 2 )
+      ];
+      var boxes = [ box ];
+
+      box.setPosition(
+        position[ 0 ].x,
+        position[ 0 ].y,
+        position[ 0 ].z
+      );
+      var boxes = [ box ];
+      for ( var i = 1; i < position.length; i ++ ) {
+        boxes[ i ] = boxes[ 0 ].clone();
+        boxes[ i ].setPosition(
+          position[ i ].x,
+          position[ i ].y,
+          position[ i ].z
+        );
+      }
+    }
+
+    function wait ( ms ) {
+      var d = new $.Deferred();
+      setTimeout( function () {
+        d.resolve();
+      }, ms );
+      return d.promise();
+    }
+  } );
+} );
+</script>
+</body>
+</html>
